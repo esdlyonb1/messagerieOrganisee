@@ -1,6 +1,13 @@
 
 const content = document.querySelector('.content')
+const refreshButton = document.querySelector('#refreshButton')
+
 let token = null
+
+refreshButton.addEventListener('click', ()=>{
+    run()
+})
+
 
 
 function run()
@@ -84,8 +91,17 @@ function renderMessages(tableauMessages)
 
         contentMessages += generateMessage(message)
     })
-    render(contentMessages)
 
+    let messagesAndMessageForm = contentMessages + generateMessageForm()
+
+    render(messagesAndMessageForm)
+
+    const postMessage = document.querySelector('#postMessage')
+    const postMessageButton = document.querySelector('#postMessageButton')
+
+    postMessageButton.addEventListener('click', ()=>{
+        sendMessage(postMessage.value)
+    })
 
 }
 
@@ -113,6 +129,48 @@ async function fetchMessages()
                 renderLoginForm()
             }else{
                return data
+            }
+
+
+        })
+}
+
+function generateMessageForm()
+{
+    let messageFormTemplate = `<div class="form-control">
+                                    <input class="form-control" type="text" name="" id="postMessage" placeholder="your message">
+                                    <button class="btn btn-success form-control" id="postMessageButton">Envoyer</button>
+                                </div>`
+    return messageFormTemplate
+}
+
+function sendMessage(messageToSend)
+{
+    let body = {
+        content:messageToSend
+    }
+
+    let params = {
+        headers : {"Content-type":"application/json", "Authorization": `Bearer ${token}`},
+        method : "POST",
+        body : JSON.stringify(body)
+    }
+
+
+    fetch('https://b1messenger.imatrythis.tk/api/messages/new', params)
+        .then(response=>response.json())
+        .then(data =>{
+            if(data.message == "Invalid credentials.")
+            {
+                renderLoginForm()
+            }else{
+               if(data == "OK"){
+                   run()
+               }else{
+                   alert('problem')
+                   run()
+               }
+
             }
 
 
