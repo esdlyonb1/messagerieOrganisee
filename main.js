@@ -3,7 +3,8 @@ const content = document.querySelector('.content')
 let token = null
 
 
-function run(){
+function run()
+{
     if(!token){
         renderLoginForm()
     }else{
@@ -13,7 +14,6 @@ function run(){
 
     }
 }
-
 
 function renderLoginForm()
 {
@@ -25,7 +25,7 @@ function renderLoginForm()
                         </div>`
 
 
-    content.innerHTML = loginTemplate
+    render(loginTemplate)
     const loginButton = document.querySelector('#loginButton')
     loginButton.addEventListener('click', ()=>{
         login()
@@ -33,35 +33,8 @@ function renderLoginForm()
 
 
 }
-
-function generateMessage(message)
+function login()
 {
-    let messageTemplate = `    <div class="row">
-                                <hr>
-                                    <p><strong>${message.author.username} :</strong> ${message.content}  </p>
-                                <hr>
-                            </div>`
-
-    return messageTemplate
-}
-
-function renderMessages(tableauMessages)
-{
-    let contentMessages=""
-
-    tableauMessages.forEach(message=>{
-
-        contentMessages += generateMessage(message)
-    })
-    content.innerHTML = contentMessages
-}
-
-function render(content){
-    content.innerHTML = ""
-    content.innerHTML = content
-}
-
-function login(){
     const username = document.querySelector('#username')
     const password = document.querySelector('#password')
 
@@ -92,10 +65,38 @@ function login(){
         })
 
 }
+function generateMessage(message)
+{
+    let messageTemplate = `    <div class="row">
+                                <hr>
+                                    <p><strong>${message.author.username} :</strong> ${message.content}  </p>
+                                <hr>
+                            </div>`
 
-async function fetchMessages(){
+    return messageTemplate
+}
+
+function renderMessages(tableauMessages)
+{
+    let contentMessages=""
+
+    tableauMessages.forEach(message=>{
+
+        contentMessages += generateMessage(message)
+    })
+    render(contentMessages)
 
 
+}
+
+function render(pageContent)
+{
+    content.innerHTML = ""
+    content.innerHTML = pageContent
+}
+
+async function fetchMessages()
+{
 
     let params = {
         headers : {"Content-type":"application/json",
